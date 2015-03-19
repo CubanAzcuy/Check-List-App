@@ -24,11 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
+//http://stackoverflow.com/questions/27708503/how-to-handle-swipe-to-remove-on-recyclerview-correctly
 
 public class TaskActivity extends ActionBarActivity {
     final Context context = this;
     private Realm realm;
+    TaskObjectAdapter mAdapter;
+    List<TaskObject> tasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +63,10 @@ public class TaskActivity extends ActionBarActivity {
             }
         });
 
-        TaskObjectAdapter mAdapter = new TaskObjectAdapter();
+        mAdapter = new TaskObjectAdapter();
         mAdapter.notifyDataSetChanged();
-        mAdapter.setData(createList(20));
+        createList(2);
+        mAdapter.setData(getAllTasks());
 
         recList.setAdapter(mAdapter);
     }
@@ -88,20 +94,34 @@ public class TaskActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private List<TaskObject> getAllTasks(){
+        // Build the query looking at all users:
+        RealmQuery<TaskObject> query = realm.where(TaskObject.class);
+        RealmResults<TaskObject> result = query.findAll();
+        result.sort("completed", RealmResults.SORT_ORDER_DESCENDING);
 
-    private List<TaskObject> createList(int size) {
+        tasks = new ArrayList<TaskObject>();
 
-        List<TaskObject> result = new ArrayList<TaskObject>();
+        for(TaskObject task : result)
+            tasks.add(task);
+
+        return tasks;
+    }
+
+    private void createList(int size) {
+
         for (int i=1; i <= size; i++) {
-            TaskObject ci = new TaskObject();
-            ci.setName("Hi ®" + i);
-            ci.setColor("#6889ff");
-
-            result.add(ci);
-
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    TaskObject task = realm.createObject(TaskObject.class); // Create a new object
+                    task.setName("Bye ®");
+                    task.setColor("#6889ff");
+                    task.setCompleted(false);
+                }
+            });
         }
 
-        return result;
     }
 
     public void displayDialog () {
@@ -136,6 +156,17 @@ public class TaskActivity extends ActionBarActivity {
 
                     System.out.println("Task: " + task + " - color: " + color);
                     //call redraw for tableview? before dismiss?
+
+                    realm.beginTransaction();
+
+                    TaskObject taskObj = realm.createObject(TaskObject.class); // Create a new object
+                    taskObj.setName(task);
+                    taskObj.setColor(color);
+                    taskObj.setCompleted(false);
+                    mAdapter.add(taskObj);
+                    realm.commitTransaction();
+
+
                     dialog.dismiss();
 
                     Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();

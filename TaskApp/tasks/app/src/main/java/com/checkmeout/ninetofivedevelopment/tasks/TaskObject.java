@@ -6,6 +6,7 @@ public class TaskObject extends RealmObject {
 
     private String name;
     private String color;
+    private boolean completed;
 
     public String getName() {
         return name;
@@ -21,6 +22,14 @@ public class TaskObject extends RealmObject {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
 }

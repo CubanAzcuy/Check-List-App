@@ -19,6 +19,11 @@ public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.T
         this.tasks = details;
     }
 
+    public void add(TaskObject taskObject) {
+        tasks.add(taskObject);
+        notifyItemInserted(tasks.size());
+    }
+
     @Override
     public void onBindViewHolder(TaskCardViewHolder contactViewHolder, int i) {
         TaskObject ci = tasks.get(i);
