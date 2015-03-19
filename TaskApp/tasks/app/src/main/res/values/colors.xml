@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent">#F50056</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="bkg_card">#8C9EFF</color>
+    <color name="secondary">#259ba6</color>
+
+    <color name="card_color">#40c4ff</color>
+    <color name="primary_alt">#673ab7</color>
+    <color name="primary_dark_alt">#512da8</color>
+    <color name="accent_alt">#536dfe</color>
+    <color name="secondary_alt">#6889ff</color>
+
+
+    <color name="primary_pressed">#6889ff</color>
+    <color name="ripple">#6889ff</color>
+
+    //ripple
+    <!-- <color name="control_highlight_alt">#57A1FF</color> -->®
+</resources>
