@@ -1,10 +1,13 @@
 package com.checkmeout.ninetofivedevelopment.tasks;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.github.pavlospt.CircleView;
 
 import java.util.List;
 
@@ -28,7 +31,9 @@ public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.T
     public void onBindViewHolder(TaskCardViewHolder contactViewHolder, int i) {
         TaskObject ci = tasks.get(i);
         contactViewHolder.vName.setText(ci.getName());
-        contactViewHolder.vColor.setText(ci.getColor());
+        contactViewHolder.vColor.setFillColor(Color.parseColor(ci.getColor()));
+        contactViewHolder.vColor.setStrokeColor(Color.parseColor(ci.getColor()));
+
     }
 
     @Override
@@ -58,12 +63,12 @@ public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.T
     public static class TaskCardViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView vName;
-        protected TextView vColor;
+        protected CircleView vColor;
 
         public TaskCardViewHolder(View v) {
             super(v);
             vName =  (TextView) v.findViewById(R.id.title);
-            vColor = (TextView)  v.findViewById(R.id.txtColor);
+            vColor = (CircleView) v.findViewById(R.id.color);
         }
     }
 }

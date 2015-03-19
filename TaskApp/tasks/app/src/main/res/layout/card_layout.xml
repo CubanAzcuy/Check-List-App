@@ -12,26 +12,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.github.pavlospt.CircleView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/color"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:scaleType="center"
+            app:titleText=""
+            app:subtitleText=""
+            app:titleSize="0dp"
+            app:subtitleSize="0dp"
+            app:fillColor="@color/secondary_alt"
+            app:fillRadius="1"/>
+
+        <View android:id="@+id/strut"
+            android:layout_width="10dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@id/color"
+            />
+
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:background="@color/bkg_card"
             android:text="contact det"
-            android:gravity="center_vertical"
-            android:textColor="@android:color/white"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:textColor="@android:color/black"
+            android:layout_toRightOf="@id/strut"
             android:textSize="14dp"/>
-
-        <TextView
-            android:id="@+id/txtColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:gravity="center_vertical"
-            android:textSize="10dp"
-            android:layout_below="@id/title"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"/>
 
     </RelativeLayout>
 

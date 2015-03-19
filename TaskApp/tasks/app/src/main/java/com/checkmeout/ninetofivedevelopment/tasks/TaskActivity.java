@@ -158,7 +158,6 @@ public class TaskActivity extends ActionBarActivity {
                     //call redraw for tableview? before dismiss?
 
                     realm.beginTransaction();
-
                     TaskObject taskObj = realm.createObject(TaskObject.class); // Create a new object
                     taskObj.setName(task);
                     taskObj.setColor(color);
