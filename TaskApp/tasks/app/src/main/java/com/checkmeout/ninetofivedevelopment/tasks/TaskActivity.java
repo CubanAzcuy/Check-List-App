@@ -2,6 +2,7 @@ package com.checkmeout.ninetofivedevelopment.tasks;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,7 +64,16 @@ public class TaskActivity extends ActionBarActivity {
             }
         });
 
-        mAdapter = new TaskObjectAdapter();
+        OnCellTouchListener cellTouchListener = new OnCellTouchListener() {
+            @Override
+            public void onCardViewTap(View view, int position) {
+                System.out.println("test" + tasks.get(position).toString());
+                //tasks.get(position).setCompleted(true);
+                view.setBackgroundColor(Color.GREEN);
+            }
+        };
+
+        mAdapter = new TaskObjectAdapter(cellTouchListener);
         mAdapter.notifyDataSetChanged();
         createList(2);
         mAdapter.setData(getAllTasks());
@@ -180,5 +190,10 @@ public class TaskActivity extends ActionBarActivity {
 
         //hide fab on show??
         dialog.show();
+    }
+
+
+    public interface OnCellTouchListener {
+        public void onCardViewTap(View view, int position);
     }
 }
