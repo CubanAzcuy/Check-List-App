@@ -14,6 +14,12 @@ import java.util.List;
 public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.TaskCardViewHolder>  {
 
     private List<TaskObject> tasks = null;
+    private TaskActivity.OnCellTouchListener onCellTouchListener;
+
+    public TaskObjectAdapter(TaskActivity.OnCellTouchListener onCellTouchListener) {
+        this.tasks = tasks;
+        this.onCellTouchListener = onCellTouchListener;
+    }
 
     public void setData(List<TaskObject> details) {
         this.tasks = details;
@@ -55,7 +61,7 @@ public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.T
     }
 
 
-    public static class TaskCardViewHolder extends RecyclerView.ViewHolder {
+    public class TaskCardViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView vName;
         protected TextView vColor;
@@ -64,6 +70,14 @@ public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.T
             super(v);
             vName =  (TextView) v.findViewById(R.id.title);
             vColor = (TextView)  v.findViewById(R.id.txtColor);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onCellTouchListener.onCardViewTap(view, getPosition());
+                }
+            });
         }
     }
+
 }
