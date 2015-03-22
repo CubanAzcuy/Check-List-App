@@ -23,7 +23,6 @@ public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.T
         this.tasks = tasks;
         this.onCellTouchListener = onCellTouchListener;
     }
-
     public void setData(List<TaskObject> details) {
         this.tasks = details;
     }

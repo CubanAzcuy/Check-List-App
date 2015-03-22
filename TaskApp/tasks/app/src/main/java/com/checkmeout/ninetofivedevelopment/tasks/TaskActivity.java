@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import io.realm.RealmResults;
 public class TaskActivity extends ActionBarActivity {
     final Context context = this;
     private Realm realm;
+    private RecyclerView recList;
     TaskObjectAdapter mAdapter;
     List<TaskObject> tasks;
 
@@ -40,15 +42,10 @@ public class TaskActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
-        RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
-        recList.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
-
 
         realm = Realm.getInstance(this);
 
+        initRecyclerView();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToRecyclerView(recList);
@@ -64,21 +61,7 @@ public class TaskActivity extends ActionBarActivity {
             }
         });
 
-        OnCellTouchListener cellTouchListener = new OnCellTouchListener() {
-            @Override
-            public void onCardViewTap(View view, int position) {
-                System.out.println("test" + tasks.get(position).toString());
-                //tasks.get(position).setCompleted(true);
-                view.setBackgroundColor(Color.GREEN);
-            }
-        };
 
-        mAdapter = new TaskObjectAdapter(cellTouchListener);
-        mAdapter.notifyDataSetChanged();
-        createList(2);
-        mAdapter.setData(getAllTasks());
-
-        recList.setAdapter(mAdapter);
     }
 
 
@@ -102,6 +85,58 @@ public class TaskActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initRecyclerView() {
+        recList = (RecyclerView) findViewById(R.id.cardList);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
+
+
+        OnCellTouchListener cellTouchListener = new OnCellTouchListener() {
+            @Override
+            public void onCardViewTap(View view, int position) {
+                System.out.println("test" + tasks.get(position).toString());
+                //tasks.get(position).setCompleted(true);
+                view.setBackgroundColor(Color.GREEN);
+            }
+        };
+
+        mAdapter = new TaskObjectAdapter(cellTouchListener);
+        //mAdapter.notifyDataSetChanged();
+        createList(2);
+        mAdapter.setData(getAllTasks());
+
+        recList.setAdapter(mAdapter);
+
+        SwipeToRemoveRecyclerViewListener touchListener =
+                new SwipeToRemoveRecyclerViewListener(recList,
+                        new SwipeToRemoveRecyclerViewListener.RemoveCallBacks() {
+                            @Override
+                            public boolean canRemove(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onRemove(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+        recList.setOnTouchListener(touchListener);/*
+        recList.setOnScrollListener(touchListener.makeScrollListener());
+        recList.addOnItemTouchListener(new RecyclerItemClickListener(this,
+                new OnCellTouchListener() {
+                    @Override
+                    public void onCardViewTap(View view, int position) {
+                        Toast.makeText(context, "Clicked " + realm.getPath().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }));*/
     }
 
     private List<TaskObject> getAllTasks(){
@@ -191,6 +226,36 @@ public class TaskActivity extends ActionBarActivity {
         //hide fab on show??
         dialog.show();
     }
+
+    public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+        private OnCellTouchListener listener;
+        GestureDetector gestureDetector;
+
+        public RecyclerItemClickListener(Context context, OnCellTouchListener listener) {
+            this.listener = listener;
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+            View childView = view.findChildViewUnder(e.getX(), e.getY());
+            if (childView != null && this.listener != null && gestureDetector.onTouchEvent(e)) {
+                listener.onCardViewTap(childView, view.getChildPosition(childView));
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+
+        }
+    }
+
 
 
     public interface OnCellTouchListener {
