@@ -10,7 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="100dp"
+        android:clickable="false">
 
         <com.github.pavlospt.CircleView
             xmlns:app="http://schemas.android.com/apk/res-auto"

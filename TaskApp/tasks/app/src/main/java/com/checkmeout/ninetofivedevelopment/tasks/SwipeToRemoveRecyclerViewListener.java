@@ -49,7 +49,7 @@ public class SwipeToRemoveRecyclerViewListener implements View.OnTouchListener {
     public SwipeToRemoveRecyclerViewListener(RecyclerView recyclerView, RemoveCallBacks callBacks) {
         ViewConfiguration vc = ViewConfiguration.get(recyclerView.getContext());
         slop = vc.getScaledEdgeSlop();
-        minFlingVelocity = vc.getScaledMinimumFlingVelocity();
+        minFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         maxFlingVelocity = vc.getScaledMaximumFlingVelocity();
         animTime = recyclerView.getContext().getResources().getInteger(android.R.integer.config_shortAnimTime);
         this.recyclerView = recyclerView;

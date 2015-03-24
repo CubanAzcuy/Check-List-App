@@ -14,6 +14,9 @@ android {
     repositories {
         mavenCentral()
         mavenLocal()
+        maven {
+            url "https://jitpack.io"
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -28,6 +31,7 @@ android {
 }
 
 dependencies {
+    compile 'com.github.ismoli:DynamicRecyclerView:e641d53486'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:cardview-v7:21.0.+'

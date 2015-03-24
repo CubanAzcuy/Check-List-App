@@ -20,12 +20,15 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.du.android.recyclerview.DragDropTouchListener;
+import com.du.android.recyclerview.SwipeToDismissTouchListener;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
@@ -105,13 +108,48 @@ public class TaskActivity extends ActionBarActivity {
         };
 
         mAdapter = new TaskObjectAdapter(cellTouchListener);
-        //mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
         createList(2);
         mAdapter.setData(getAllTasks());
 
         recList.setAdapter(mAdapter);
 
-        SwipeToRemoveRecyclerViewListener touchListener =
+        SwipeToDismissTouchListener swipeToDismissTouchListener = new SwipeToDismissTouchListener(recList, new SwipeToDismissTouchListener.DismissCallbacks() {
+            @Override
+            public SwipeToDismissTouchListener.SwipeDirection canDismiss(int position) {
+                return SwipeToDismissTouchListener.SwipeDirection.RIGHT;
+            }
+            @Override
+            public void onDismiss(RecyclerView view, List<SwipeToDismissTouchListener.PendingDismissData> dismissData) {
+                for (SwipeToDismissTouchListener.PendingDismissData data : dismissData) {
+                    mAdapter.remove(data.position);
+                    //mAdapter.notifyItemRemoved(data.position);
+
+                    realm.beginTransaction();
+
+                    realm.commitTransaction();
+
+                }
+            }
+        });
+        recList.addOnItemTouchListener(swipeToDismissTouchListener);
+
+        DragDropTouchListener dragDropTouchListener = new DragDropTouchListener(recList, this) {
+            @Override
+            protected void onItemSwitch(RecyclerView recyclerView, int from, int to) {
+                mAdapter.swapPositions(from, to);
+                mAdapter.notifyItemChanged(to);
+                mAdapter.notifyItemChanged(from);
+            }
+
+            @Override
+            protected void onItemDrop(RecyclerView recyclerView, int position) {
+
+            }
+        };
+        recList.addOnItemTouchListener(dragDropTouchListener);
+
+        /*SwipeToRemoveRecyclerViewListener touchListener =
                 new SwipeToRemoveRecyclerViewListener(recList,
                         new SwipeToRemoveRecyclerViewListener.RemoveCallBacks() {
                             @Override
@@ -122,21 +160,21 @@ public class TaskActivity extends ActionBarActivity {
                             @Override
                             public void onRemove(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-
+                                    mAdapter.remove(position);
                                 }
                                 mAdapter.notifyDataSetChanged();
                             }
                         });
 
-        recList.setOnTouchListener(touchListener);/*
-        recList.setOnScrollListener(touchListener.makeScrollListener());
+        recList.setOnTouchListener(touchListener);
+        recList.setOnScrollListener(touchListener.makeScrollListener());*/
         recList.addOnItemTouchListener(new RecyclerItemClickListener(this,
                 new OnCellTouchListener() {
                     @Override
                     public void onCardViewTap(View view, int position) {
                         Toast.makeText(context, "Clicked " + realm.getPath().toString(), Toast.LENGTH_SHORT).show();
                     }
-                }));*/
+                }));
     }
 
     private List<TaskObject> getAllTasks(){

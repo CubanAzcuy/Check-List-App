@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.github.pavlospt.CircleView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,6 +31,15 @@ public class TaskObjectAdapter extends  RecyclerView.Adapter<TaskObjectAdapter.T
     public void add(TaskObject taskObject) {
         tasks.add(taskObject);
         notifyItemInserted(tasks.size());
+    }
+
+    public void remove(int position) {
+        tasks.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void swapPositions(int from, int to) {
+        Collections.swap(tasks, from, to);
     }
 
     @Override
